@@ -1,10 +1,20 @@
+
+import numpy as np
+import torch
+from spacy.lang.en import English
+if torch.cuda.is_available():
+    dev = "cuda:0"
+else:
+    dev = "cpu"
+
+
 class SentenceEmbedder:
     """
     a class for embedding text with sentence embeddings
     """
 
     def __init__(self, text: str, model):
-       
+
         self.text = text
         self.model = model.to(dev)
         self.sentences = self.__create_sentences()
@@ -18,7 +28,7 @@ class SentenceEmbedder:
         return [sentence.text for sentence in doc.sents]
 
     def __create_embeddings(self):
-        
+
         # convert token to windows of tokens
         embeddings = self.model.encode(
             sentences=self.sentences,

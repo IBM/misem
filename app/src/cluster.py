@@ -1,3 +1,4 @@
+import torch
 class Cluster:
     def __init__(self, name):
         self.members = []

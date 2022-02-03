@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "seems-backend"
+version = "0.1.0"
+description = ""
+authors = ["christopher-lohse <christopher.lohse@ibm.com>"]
+
+[tool.poetry.dependencies]
+python = "3.8"
+pipreqsnb = "^0.2.4"
+fastapi = "^0.73.0"
+sklearn = "^0.0"
+torch = "^1.10.2"
+pandas = "^1.4.0"
+sentence-transformers = "^2.1.0"
+uvicorn = "^0.17.2"
+spacy = "^3.2.1"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,3 +1,8 @@
+from src.cluster import Cluster
+from src.clustering import Clustering
+from sklearn.cluster import AgglomerativeClustering
+
+
 class AggloClustering(Clustering):
     """"""
 
@@ -9,13 +14,15 @@ class AggloClustering(Clustering):
         """
         self.embeddings = embeddings
         self.cluster_output = AgglomerativeClustering(
-           n_clusters=None, distance_threshold=distance_threshold,
-        affinity="cosine", linkage="complete").fit(self.embeddings.cpu().numpy())
+            n_clusters=None, distance_threshold=distance_threshold,
+            affinity="cosine", linkage="complete").fit(self.embeddings.cpu().numpy())
         self.cluster_labels = self.cluster_output.labels_
-        self.n_cluster = len(set(filter(lambda x: x != -1, self.cluster_labels)))
+        self.n_cluster = len(
+            set(filter(lambda x: x != -1, self.cluster_labels)))
         percentage = len(list(filter(lambda x: x != -1, self.cluster_labels))) / len(
             self.embeddings
         )
+        self.x_tsne, self.y_tsne, self.z_tsne = self._get_tsne_coordinates()
 
         self.clusters = []
 
