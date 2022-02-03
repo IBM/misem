@@ -46,7 +46,7 @@ class Annotator:
             color = color_map(similarity)
             # convert the color from rgba to hex
             color = to_hex(color)
-            annotations.append((token + " ", similarity, color))
+            annotations.append((token, similarity, color))
 
         return annotations
 
@@ -70,7 +70,7 @@ class Annotator:
             if similarity > threshold:
                 annotated_text_list.append((token, str(similarity), color))
             else:
-                annotated_text_list.append(token)
+                annotated_text_list.append(" " + token + " ")
 
         return annotated_text_list
 
@@ -86,7 +86,7 @@ class Annotator:
 
         return annotated_text(*self.__apply_threshold(cluster_label, threshold))
 
-    def get_annotated_reference_text(self, cluster_label: int, color: str = '#3F51B5'):
+    def get_annotated_reference_text(self, cluster_label: int, color: str = '#E6EE9C'):
         """
         Returns a list of tuples, where each tuple is a sentence, and its color, based on the cluster_label.
         input:
@@ -98,6 +98,6 @@ class Annotator:
         annotations = []
 
         for i, sentence in enumerate(self.reference_sentences):
-            annotations.append((sentence + " ", str(cluster_label), color) if self.cluster_labels[i] == cluster_label else sentence + " ")
+            annotations.append((sentence, str(cluster_label), color) if self.cluster_labels[i] == cluster_label else " " + sentence + " ")
 
         return annotated_text(*annotations)

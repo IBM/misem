@@ -50,9 +50,9 @@ def get_seems(reference_text: str, inference_text: str):
         "cluster_scores": [1000, 500, 350],
         "cluster_proportions": [0.5, 0.25, 0.25],
         "cluster_affinity_matrix": [
-            [0.2, 0.0, 0.7, 0.0, 0.3],
-            [0.8, 0.4, 0.0, 0.1, 0.2],
-            [0.0, 0.0, 0.3, 0.9, 0.1]
+            [0.6, 0.55, 0.7, 0.2, 0.1],
+            [0.2, 0.3, 0.3, 0.57, 0.6],
+            [0.4, 0.8, 0.6, 0.2, 0.5]
         ]
     }
 
