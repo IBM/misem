@@ -28,9 +28,7 @@ class SeemsResponse(BaseModel):
 
 
 def getScore(reference_text, inference_text, distance_threshold=0.9) -> SeemsResponse:
-    print(reference_text)
     reference_embedder = SentenceEmbedder(reference_text, sent_model)
-    print(reference_embedder.sentences)
     clustering = AggloClustering(
         reference_embedder.embeddings, distance_threshold)
     inference_embedder = TokenEmbedder(inference_text, sent_model)
