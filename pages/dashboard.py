@@ -33,34 +33,18 @@ def run():
 
     with st.expander("Score", expanded=True):
         st.metric(label="SEEMS SCORE", value=round(seems.seems_score,2))
-        st.caption("Lorem Ipsum is simply dummy text of the printing and typesetting industry.")
+        st.caption(f"""The reference text contains {len(seems.reference_text_sentences)} sentences and was clustered into {len(seems.cluster_scores)} different clusters. The inference text consists of {len(seems.inference_text_tokens)} tokens. The heatmap below illustrates how different clusters and tokens are related. SEEMS takes into account how well each cluster is represented by the inference text.""")
+
+        heatmap_fig = get_affinity_matrix_heatmap_figure(
+            seems.cluster_affinity_matrix, seems.inference_text_tokens
+        )
+        st.plotly_chart(heatmap_fig, use_container_width=True)
 
     if st.session_state.colors == None:
         st.session_state.colors = get_n_colors(len(seems.cluster_scores))
 
-    with st.expander("Cluster Stats", expanded=True):
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.header("Cluster Scores")
-            st.caption(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            )
-            scores_fig = get_cluster_scores_bar_chart_figure(seems.cluster_scores, st.session_state.colors)
-            st.plotly_chart(scores_fig, use_container_width=True)
-
-        with col2:
-            st.header("Cluster Weights")
-            st.caption(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            )
-            proportions_fig = get_proportions_pie_chart_figure(
-                seems.cluster_proportions, st.session_state.colors
-            )
-            st.plotly_chart(proportions_fig, use_container_width=True)
-
     with st.expander("Reference Text Clusters", expanded=True):
-        st.caption("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
+        st.caption(f"""The reference text was clustered into {len(seems.cluster_scores)} different clusters. The scatter plot below visualizes the clusters in a 3D space, where each sentence in the reference text is represented by a point. The color of each point represents the cluster label. Hovering over a point reveals its text.""")
         tsne_fig = get_tsne_scatter_figure(
             seems.x_tsne,
             seems.y_tsne,
@@ -71,13 +55,35 @@ def run():
         )
         st.plotly_chart(tsne_fig, use_container_width=True)
 
+    with st.expander("Cluster Stats", expanded=True):
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.header("Cluster Scores")
+            st.caption(
+                "The cluster score is an indicator of how well a cluster is represented by the inference text. The higher the score, the better the cluster is represented by the inference text. Clusters with lower scores can be further investigated using the annotation tool below."
+            )
+            scores_fig = get_cluster_scores_bar_chart_figure(seems.cluster_scores, st.session_state.colors)
+            st.plotly_chart(scores_fig, use_container_width=True)
+
+        with col2:
+            st.header("Cluster Weights")
+            st.caption(
+                "The relative size of a cluster (its weight) is used by SEEMS as an indicator of how important a cluster is. The larger the weight, the more important the cluster is."
+            )
+            proportions_fig = get_proportions_pie_chart_figure(
+                seems.cluster_proportions, st.session_state.colors
+            )
+            st.plotly_chart(proportions_fig, use_container_width=True)
+
     with st.expander("Annotated Text", expanded=True):
-        st.caption("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
+        st.caption("This tool allows to compare reference text clusters with the inference text tokens. It can be used to analyse clusters with low scores. The left column shows the reference text cluster text. The right column shows the inference text tokens, with the color of each token indicating the similarity to the reference text cluster.")
 
         annotator = Annotator(seems.inference_text_tokens, seems.reference_text_sentences, seems.cluster_affinity_matrix, seems.cluster_labels)
 
         with st.form("Text Input Form"):
             selected_cluster = st.selectbox("Select Cluster", range(len(seems.cluster_scores)))
+            threshold = st.slider("Threshold", 0., 1., 0.4)
             submit = st.form_submit_button("Submit", on_click=__select_cluster, args=[selected_cluster])
             if submit:
                 st.session_state.selected_cluster = selected_cluster
@@ -92,19 +98,5 @@ def run():
         with col2:
             with st.container():
                 st.header("Inference Text")
-                annotator.get_annotated_inference_text(st.session_state.selected_cluster, 0.4)
+                annotator.get_annotated_inference_text(st.session_state.selected_cluster, threshold)
                 #st.write(annotations)
-
-        v_spacer(height=3)
-
-
-    with st.expander("Cluster Affinity Matrix", expanded=True):
-        st.caption(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        )
-        #st.write(len(seems.cluster_affinity_matrix))
-        #st.write(len(seems.inference_text_tokens))
-        heatmap_fig = get_affinity_matrix_heatmap_figure(
-            seems.cluster_affinity_matrix, seems.inference_text_tokens
-        )
-        st.plotly_chart(heatmap_fig, use_container_width=True)
