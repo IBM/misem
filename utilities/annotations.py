@@ -2,6 +2,7 @@ import streamlit as st
 from annotated_text import annotated_text
 from matplotlib.colors import to_hex
 import matplotlib.pyplot as plt
+import numpy as np
 
 class Annotator:
     """
@@ -25,7 +26,7 @@ class Annotator:
             cluster_token_similarities: list of floats
         """
 
-        return self.affinity_matrix[cluster_label]
+        return np.array(self.affinity_matrix).T[cluster_label]
 
     def __get_annotation_tuples(self, cluster_label: int):
         """
@@ -37,8 +38,7 @@ class Annotator:
         """
 
         cluster_token_similarities = self.__get_cluster_token_similarities(cluster_label)
-
-        color_map = plt.cm.get_cmap('plasma', len(cluster_token_similarities))
+        color_map = plt.cm.get_cmap('summer', len(cluster_token_similarities))
 
         annotations = []
 
@@ -68,7 +68,7 @@ class Annotator:
 
         for token, similarity, color in annotations:
             if similarity > threshold:
-                annotated_text_list.append((token, str(similarity), color))
+                annotated_text_list.append((token, str(round(similarity,2)), color))
             else:
                 annotated_text_list.append(" " + token + " ")
 
@@ -84,7 +84,7 @@ class Annotator:
             annotations: list of tuples/ strings
         """
 
-        return annotated_text(*self.__apply_threshold(cluster_label, threshold))
+        return annotated_text(*self.__apply_threshold(cluster_label, threshold))#, self.__apply_threshold(cluster_label, threshold)
 
     def get_annotated_reference_text(self, cluster_label: int, color: str = '#E6EE9C'):
         """
@@ -98,6 +98,6 @@ class Annotator:
         annotations = []
 
         for i, sentence in enumerate(self.reference_sentences):
-            annotations.append((sentence, str(cluster_label), color) if self.cluster_labels[i] == cluster_label else " " + sentence + " ")
+            annotations.append((sentence, "cluster " + str(cluster_label), color) if self.cluster_labels[i] == cluster_label else " " + sentence + " ")
 
         return annotated_text(*annotations)

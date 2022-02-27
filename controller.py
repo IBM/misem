@@ -5,6 +5,7 @@ class SEEMSController:
     def __init__(self):
         self.reference_text = None
         self.inference_text = None
+        self.distance_threshold = None
         self.seems_score = None
         self.reference_text_sentences = None
         self.inference_text_tokens = None
@@ -17,10 +18,11 @@ class SEEMSController:
         self.cluster_affinity_matrix = None
         self.topic = None
 
-    def get_results(self, reference_text: str, inference_text: str):
+    def get_results(self, reference_text: str, inference_text: str, distance_threshold: float = 0.9):
         self.reference_text = reference_text
         self.inference_text = inference_text
-        results = get_seems(self.reference_text, self.inference_text)
+        self.distance_threshold = distance_threshold
+        results = get_seems(self.reference_text, self.inference_text, self.distance_threshold)
         self.seems_score = results["seems_score"]
         self.reference_text_sentences = results["reference_text_sentences"]
         self.inference_text_tokens = results["inference_text_tokens"]
