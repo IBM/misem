@@ -5,7 +5,7 @@ description = ""
 authors = ["christopher-lohse <christopher.lohse@ibm.com>", "ben-schaper <ben.schaper@ibm.com>"]
 
 [tool.poetry.dependencies]
-python = "3.8"
+python = "3.9.9"
 pipreqsnb = "^0.2.4"
 fastapi = "^0.73.0"
 sklearn = "^0.0"
@@ -14,16 +14,6 @@ pandas = "^1.4.0"
 sentence-transformers = "^2.1.0"
 uvicorn = "^0.17.2"
 spacy = "^3.2.1"
-
-[tool.poetry.dev-dependencies]
-autopep8 = "^1.6.0"
-name = "seems-frontend"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
-
-[tool.poetry.dependencies]
-python = "3.9.9"
 streamlit = "^1.5.0"
 plotly = "^5.5.0"
 st-annotated-text = "^3.0.0"
@@ -31,7 +21,7 @@ matplotlib = "^3.5.1"
 watchdog = "^2.1.6"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1.0"
+autopep8 = "^1.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
